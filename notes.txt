@@ -1,0 +1,40 @@
+// input.addEventListener("change", (e) => {
+        //   const file = e.target.files[0]
+        //   if (!file) return
+
+        //   const reader = new FileReader()
+        //   reader.onload = () => {
+        //     const imageUrl = reader.result
+
+        //     // Apply pattern fill to the element
+        //     const patternId = `pattern-${phId}`
+        //     let defs = svg.querySelector("defs")
+        //     if (!defs) {
+        //       defs = document.createElementNS("http://www.w3.org/2000/svg", "defs")
+        //       svg.insertBefore(defs, svg.firstChild)
+        //     }
+
+        //     let pattern = svg.querySelector(`#${patternId}`)
+        //     if (!pattern) {
+        //       pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern")
+        //       pattern.setAttribute("id", patternId)
+        //       pattern.setAttribute("patternUnits", "userSpaceOnUse")
+        //       pattern.setAttribute("width", "100")
+        //       pattern.setAttribute("height", "100")
+
+        //       const image = document.createElementNS("http://www.w3.org/2000/svg", "image")
+        //       image.setAttributeNS("http://www.w3.org/1999/xlink", "href", imageUrl)
+        //       image.setAttribute("width", "100")
+        //       image.setAttribute("height", "100")
+        //       pattern.appendChild(image)
+        //       defs.appendChild(pattern)
+        //     } else {
+        //       const image = pattern.querySelector("image")
+        //       image.setAttributeNS("http://www.w3.org/1999/xlink", "href", imageUrl)
+        //     }
+
+        //     el.setAttribute("fill", `url(#${patternId})`)
+        //   }
+
+        //   reader.readAsDataURL(file)
+        // })

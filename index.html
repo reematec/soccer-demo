@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Color Picker UI</title>
+
     <style>
       * {
         box-sizing: border-box;
@@ -299,65 +300,58 @@
         }
       })
 
+      const svgNS = "http://www.w3.org/2000/svg"
       // --- Handle image placeholders ---
       const placeholderElements = svg.querySelectorAll("[placehold]")
       placeholderElements.forEach((el) => {
+        console.log(el)
         const phId = el.getAttribute("placehold")
 
         const btn = document.createElement("button")
         btn.textContent = phId.replace(/[-_]/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
         btn.style.marginBottom = "0.5rem"
 
-        const input = document.createElement("input")
-        input.type = "file"
-        input.accept = "image/*"
-        input.style.display = "none"
+        const upload = document.createElement("input")
+        upload.type = "file"
+        upload.accept = "image/*"
+        upload.style.display = "none"
 
-        btn.addEventListener("click", () => input.click())
+        btn.addEventListener("click", () => upload.click())
 
-        input.addEventListener("change", (e) => {
+        const bbox = el.getBBox()
+        console.log(bbox)
+        const { x, y, width, height } = bbox
+
+        // Step 3: Create the final trimmed SVG
+        const svg = document.createElementNS(svgNS, "svg")
+        svg.setAttribute("xmlns", svgNS)
+        svg.setAttribute("width", width)
+        svg.setAttribute("height", height)
+        svg.setAttribute("fill", "#000000")
+        svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`)
+
+        el.parentNode.insertBefore(svg, el.nextSibling)
+
+        upload.addEventListener("change", (e) => {
           const file = e.target.files[0]
           if (!file) return
 
           const reader = new FileReader()
           reader.onload = () => {
-            const imageUrl = reader.result
-
-            // Apply pattern fill to the element
-            const patternId = `pattern-${phId}`
-            let defs = svg.querySelector("defs")
-            if (!defs) {
-              defs = document.createElementNS("http://www.w3.org/2000/svg", "defs")
-              svg.insertBefore(defs, svg.firstChild)
-            }
-
-            let pattern = svg.querySelector(`#${patternId}`)
-            if (!pattern) {
-              pattern = document.createElementNS("http://www.w3.org/2000/svg", "pattern")
-              pattern.setAttribute("id", patternId)
-              pattern.setAttribute("patternUnits", "userSpaceOnUse")
-              pattern.setAttribute("width", "100")
-              pattern.setAttribute("height", "100")
-
-              const image = document.createElementNS("http://www.w3.org/2000/svg", "image")
-              image.setAttributeNS("http://www.w3.org/1999/xlink", "href", imageUrl)
-              image.setAttribute("width", "100")
-              image.setAttribute("height", "100")
-              pattern.appendChild(image)
-              defs.appendChild(pattern)
-            } else {
-              const image = pattern.querySelector("image")
-              image.setAttributeNS("http://www.w3.org/1999/xlink", "href", imageUrl)
-            }
-
-            el.setAttribute("fill", `url(#${patternId})`)
+            const img = document.createElementNS(svgNS, "image")
+            img.setAttributeNS(null, "href", reader.result)
+            img.setAttribute("width", width / 2)
+            img.setAttribute("height", height / 2)
+            img.setAttribute("x", x + width / 4)
+            img.setAttribute("y", y + height / 4)
+            svg.appendChild(img)
+            console.log(img, svg)
           }
-
           reader.readAsDataURL(file)
         })
 
         sidebar.appendChild(btn)
-        sidebar.appendChild(input)
+        sidebar.appendChild(upload)
       })
 
       function rgbToHex(rgb) {
